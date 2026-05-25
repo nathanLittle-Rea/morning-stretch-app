@@ -191,6 +191,7 @@ const app = {
         document.getElementById('breathingGuide').classList.remove('active');
         document.getElementById('timerDisplay').textContent = '00:00';
         document.getElementById('exerciseIndicator').textContent = 'Ready to start';
+        document.getElementById('sessionTimer').textContent = 'Session: 00:00';
 
         this.renderExercises();
     },
@@ -341,6 +342,14 @@ const app = {
         document.getElementById('timerDisplay').textContent =
             String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
         document.getElementById('exerciseIndicator').textContent = label;
+
+        if (this.state.sessionStartTime) {
+            const elapsed = Math.floor((Date.now() - this.state.sessionStartTime) / 1000);
+            const sm = Math.floor(elapsed / 60);
+            const ss = elapsed % 60;
+            document.getElementById('sessionTimer').textContent =
+                'Session: ' + String(sm).padStart(2, '0') + ':' + String(ss).padStart(2, '0');
+        }
     },
 
     updateStatsDisplay() {
