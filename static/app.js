@@ -238,7 +238,7 @@ const app = {
                 if (this.state.currentExerciseIndex < exercises.length - 1) {
                     this.state.currentExerciseIndex++;
                     this.state.inTransition = true;
-                    this.state.transitionTimeLeft = 15;
+                    this.state.transitionTimeLeft = 10;
                     clearInterval(this._breathingInterval);
                     document.getElementById('breathingGuide').classList.remove('active');
                     this.playTransitionTone();
