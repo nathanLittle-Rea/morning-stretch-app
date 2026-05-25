@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Morning Stretch App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1>Morning Stretch</h1>
+                <p>10-minute full-body wake-up routine</p>
+            </div>
+            <div class="header-actions">
+                <button id="settingsBtn" class="icon-btn" onclick="app.openSettings()" title="Settings">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <circle cx="10" cy="10" r="1.5"/>
+                        <circle cx="10" cy="3" r="1.5"/>
+                        <circle cx="10" cy="17" r="1.5"/>
+                        <path d="M10 5v10" stroke="currentColor" stroke-width="0.5"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="timer-section">
+                <div class="timer-label">Total time</div>
+                <div class="timer-display" id="timerDisplay">10:00</div>
+                <div class="exercise-indicator" id="exerciseIndicator">Ready to start</div>
+                <div class="controls">
+                    <button id="startBtn" class="btn btn-primary" onclick="app.start()">
+                        <span class="btn-icon">▶</span> Start
+                    </button>
+                    <button id="pauseBtn" class="btn btn-secondary" onclick="app.pause()" style="display: none;">
+                        <span class="btn-icon">⏸</span> Pause
+                    </button>
+                    <button id="resetBtn" class="btn btn-secondary" onclick="app.reset()">
+                        <span class="btn-icon">↻</span> Reset
+                    </button>
+                    <button id="skipBtn" class="btn btn-secondary" onclick="app.skipExercise()" style="display: none;">
+                        <span class="btn-icon">→</span> Skip
+                    </button>
+                </div>
+            </div>
+
+            <div class="breathing-guide" id="breathingGuide">
+                <div class="breathing-header">
+                    <h2>Box breathing</h2>
+                    <p>Follow the circle</p>
+                </div>
+                <div class="breathing-circle" id="breathingCircle">∞</div>
+                <div class="breathing-text" id="breathingText">Inhale</div>
+                <div class="breathing-counts">
+                    <p>Inhale (4) → Hold (4) → Exhale (4) → Hold (4)</p>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Completed today</div>
+                    <div class="stat-value" id="completedCount">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Current streak</div>
+                    <div class="stat-value" id="streakCount">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total sessions</div>
+                    <div class="stat-value" id="sessionCount">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">This week</div>
+                    <div class="stat-value" id="weekCount">0</div>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-btn active" onclick="app.switchTab('routine', event)">Routine</button>
+                <button class="tab-btn" onclick="app.switchTab('tips', event)">Energy Tips</button>
+                <button class="tab-btn" onclick="app.switchTab('history', event)">History</button>
+            </div>
+
+            <div id="routineTab" class="tab-content">
+                <div class="section-title">Exercises</div>
+                <div id="exerciseList" class="exercise-list"></div>
+            </div>
+
+            <div id="tipsTab" class="tab-content" style="display: none;">
+                <div class="tips-grid">
+                    <div class="tip-card">
+                        <div class="tip-icon">💧</div>
+                        <h3>Hydrate</h3>
+                        <p>Drink 16-20 oz water immediately after stretching to restore fluid balance.</p>
+                    </div>
+                    <div class="tip-card">
+                        <div class="tip-icon">🧊</div>
+                        <h3>Cold water splash</h3>
+                        <p>After stretching, splash cold water on your face to activate alertness and boost circulation.</p>
+                    </div>
+                    <div class="tip-card">
+                        <div class="tip-icon">🏃</div>
+                        <h3>Light movement</h3>
+                        <p>30 seconds of jumping jacks boosts circulation and hormone release for lasting energy.</p>
+                    </div>
+                    <div class="tip-card">
+                        <div class="tip-icon">☀️</div>
+                        <h3>Morning sunlight</h3>
+                        <p>Get 5 minutes of direct sun to regulate cortisol and reset your energy rhythm.</p>
+                    </div>
+                    <div class="tip-card">
+                        <div class="tip-icon">🔄</div>
+                        <h3>Daily consistency</h3>
+                        <p>Do this every morning—consistency matters more than intensity for anti-aging benefits.</p>
+                    </div>
+                    <div class="tip-card">
+                        <div class="tip-icon">☕</div>
+                        <h3>Before coffee</h3>
+                        <p>Stretch before caffeine for maximum effectiveness and a natural energy boost.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="historyTab" class="tab-content" style="display: none;">
+                <div class="section-title">Recent sessions</div>
+                <div id="historyList" class="history-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="settingsModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Settings</h2>
+                <button class="modal-close" onclick="app.closeSettings()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="setting-group">
+                    <label class="setting-label">
+                        <input type="checkbox" id="soundToggle" checked onchange="app.updatePreferences()">
+                        <span>Sound notifications</span>
+                    </label>
+                </div>
+                <div class="setting-group">
+                    <label class="setting-label">
+                        <input type="checkbox" id="notifToggle" checked onchange="app.updatePreferences()">
+                        <span>Desktop notifications</span>
+                    </label>
+                </div>
+                <div class="setting-group">
+                    <h3>About</h3>
+                    <p class="text-muted">Morning Stretch v1.0.0</p>
+                    <p class="text-muted">A 10-minute anti-aging stretching routine</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="app.closeSettings()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="successModal" class="modal" style="display: none;">
+        <div class="modal-content modal-success">
+            <div class="success-icon">✓</div>
+            <h2>Session complete!</h2>
+            <p id="successMessage">Great work. You're building a healthy habit.</p>
+            <div class="success-stats">
+                <div class="success-stat">
+                    <span class="label">Streak</span>
+                    <span class="value" id="successStreak">1</span>
+                </div>
+                <div class="success-stat">
+                    <span class="label">Total sessions</span>
+                    <span class="value" id="successTotal">1</span>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="app.closeSuccess()">Done</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
