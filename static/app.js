@@ -152,11 +152,12 @@ const app = {
         }
         this.state.isRunning = true;
         this.state.sessionStartTime = Date.now();
-        
+
         document.getElementById('startBtn').style.display = 'none';
         document.getElementById('pauseBtn').style.display = 'flex';
         document.getElementById('skipBtn').style.display = 'flex';
-        
+
+        this.playTransitionTone();
         this.showBreathingGuide();
         this.tick();
     },
@@ -193,6 +194,7 @@ const app = {
         if (this.state.currentExerciseIndex < exercises.length - 1) {
             this.state.completedExercises.add(this.state.currentExerciseIndex);
             this.state.currentExerciseIndex++;
+            this.playTransitionTone();
             this.renderExercises();
             this.showBreathingGuide();
         } else {
@@ -241,7 +243,7 @@ const app = {
         document.getElementById('skipBtn').style.display = 'none';
         document.getElementById('breathingGuide').classList.remove('active');
         
-        this.playSound();
+        this.playCompletionSound();
         this.showSuccessModal();
         this.loadStats();
     },
@@ -262,21 +264,26 @@ const app = {
         const circle = document.getElementById('breathingCircle');
         const text = document.getElementById('breathingText');
         const steps = ['Inhale', 'Hold', 'Exhale', 'Hold'];
+        // Frequencies: rising for inhale, mid for holds, falling for exhale
+        const stepFreqs = [528, 396, 285, 396];
         let step = 0;
 
+        const tick = () => {
+            circle.className = 'breathing-circle';
+            text.textContent = steps[step];
+            if (step === 0) circle.classList.add('inhale');
+            else if (step === 2) circle.classList.add('exhale');
+            this.playTone(stepFreqs[step], 0.6, 0.12);
+            step = (step + 1) % 4;
+        };
+
+        tick();
         this._breathingInterval = setInterval(() => {
             if (!this.state.isRunning) {
                 clearInterval(this._breathingInterval);
                 return;
             }
-
-            circle.className = 'breathing-circle';
-            text.textContent = steps[step];
-
-            if (step === 0) circle.classList.add('inhale');
-            else if (step === 2) circle.classList.add('exhale');
-
-            step = (step + 1) % 4;
+            tick();
         }, 4000);
     },
 
@@ -334,24 +341,44 @@ const app = {
         this.reset();
     },
 
-    playSound() {
+    _getAudioContext() {
+        if (!this._audioContext) {
+            this._audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        return this._audioContext;
+    },
+
+    playTone(frequency, duration, volume = 0.1) {
         if (!this.state.preferences.sound_enabled) return;
-        
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        
-        oscillator.frequency.value = 800;
-        oscillator.type = 'sine';
-        
-        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-        
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.5);
+        const ctx = this._getAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.value = frequency;
+        const now = ctx.currentTime;
+        const attack = Math.min(0.05, duration * 0.1);
+        const release = Math.min(0.3, duration * 0.4);
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(volume, now + attack);
+        gain.gain.setValueAtTime(volume, now + duration - release);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+        osc.start(now);
+        osc.stop(now + duration);
+    },
+
+    playTransitionTone() {
+        // Soft two-note chime: low then slightly higher
+        this.playTone(330, 0.5, 0.1);
+        setTimeout(() => this.playTone(440, 0.6, 0.08), 280);
+    },
+
+    playCompletionSound() {
+        // Three ascending tones for session completion
+        this.playTone(440, 0.6, 0.12);
+        setTimeout(() => this.playTone(528, 0.6, 0.12), 350);
+        setTimeout(() => this.playTone(660, 0.9, 0.12), 700);
     }
 };
 
