@@ -1,18 +1,18 @@
 # Morning Stretch App
 
-A full-featured desktop application for a 10-minute anti-aging stretching routine with guided breathing, progress tracking, and stats.
+A guided morning stretching app with 11 physiotherapist-sequenced exercises, animated breathing guides, audio cues, and progress tracking.
 
 ## Features
 
-- **10-minute guided routine** with 8 carefully sequenced stretches
-- **Animated breathing guide** with visual circle that pulses with your breath
-- **Real-time timer** with exercise tracking
-- **Progress tracking** - streak counter, total sessions, weekly/monthly stats
-- **Dark mode support** - automatically adapts to your system preferences
-- **Breathing exercises** - box breathing (parasympathetic) and energizing breath (sympathetic)
-- **Energy tips** - science-backed post-routine actions to maximize benefits
-- **Desktop app** - runs entirely on your computer, no internet required
-- **Sound notifications** - optional audio cue when you complete the routine
+- **11-exercise routine** (~14 min) sequenced floor → quadruped → standing for safe progressive loading
+- **Auto-advancing exercises** — each exercise counts down its own timer with a 10-second transition break
+- **Animated breathing guide** with visual circle and audio tones for box breathing and energizing breath
+- **Gentle audio cues** — distinct tones for each breathing phase and exercise transitions
+- **Progress tracking** — streak counter, total sessions, today/weekly stats
+- **Dark mode** — automatically adapts to system preferences
+- **Energy tips** — science-backed post-routine actions
+- **Fully offline** — runs entirely on your computer, no internet required
+- **Mobile-friendly** — accessible from any device on the same WiFi network
 
 ## System Requirements
 
@@ -54,9 +54,9 @@ The first time you launch, it may take 30-60 seconds to install dependencies. Su
 ### Starting a Session
 
 1. Click the **Start** button to begin
-2. The timer counts down from 10:00
-3. Each exercise is displayed in the list; click to see full instructions
-4. **For breathing exercises**: Follow the animated circle—it expands as you inhale, contracts as you exhale
+2. Each exercise counts down its own timer automatically
+3. A 10-second "Up next" transition break plays between exercises
+4. **For breathing exercises**: Follow the animated circle and audio tones — they guide each inhale, hold, and exhale
 
 ### During Your Routine
 
@@ -72,9 +72,9 @@ The first time you launch, it may take 30-60 seconds to install dependencies. Su
 
 ### Tabs
 
-- **Routine**: View all 8 exercises with descriptions
+- **Routine**: View all 11 exercises with descriptions
 - **Energy Tips**: Science-backed actions to boost energy (hydration, cold water, sunlight, etc.)
-- **History**: Track your completed sessions (coming soon)
+- **History**: Track your completed sessions
 
 ### Settings
 
@@ -83,16 +83,26 @@ Click the gear icon (⚙) to:
 - Enable/disable desktop notifications
 - View app version
 
-## The 10-Minute Routine
+## The Routine (~14 min)
 
-1. **Box breathing** (1 min) - Calm your nervous system
-2. **Neck rolls & shoulder shrugs** (1 min) - Release tension
-3. **Cat-cow stretch** (1.5 min) - Mobilize your spine
-4. **Child's pose** (1 min) - Relax and decompress
-5. **Standing forward fold** (1 min) - Boost brain circulation
-6. **Quad & hip flexor stretch** (1.5 min) - Release compression
-7. **Spinal twist** (1 min) - Detoxify and release tension
-8. **Energizing breath** (1 min) - Activate alertness
+Sequenced floor → quadruped → standing for safe progressive loading.
+
+**Floor (supine)**
+1. **Box breathing** (1 min) — Calm your nervous system
+2. **Glute bridge** (1 min) — Reactivate glutes dormant after sleep
+3. **Spinal twist** (1 min) — Release lumbar tension before standing
+
+**Quadruped**
+4. **Cat-cow stretch** (1.5 min) — Mobilize your spine
+5. **Thread the needle** (1 min) — Thoracic (upper back) rotation
+6. **Child's pose** (1 min) — Decompress and reset
+
+**Seated → Standing**
+7. **90/90 hip flow** (1.5 min) — Internal and external hip rotation
+8. **Neck rolls & shoulder shrugs** (1 min) — Release neck and trap tension
+9. **Standing forward fold** (1 min) — Boost brain circulation
+10. **Quad & hip flexor stretch** (1.5 min) — Release hip compression
+11. **Energizing breath** (1 min) — Activate alertness
 
 ## Troubleshooting
 
