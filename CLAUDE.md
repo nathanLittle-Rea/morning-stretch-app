@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 python3 app.py
 ```
 
-The server starts on port 5000 and auto-opens `http://localhost:5000` in the browser. To change the port, edit `app.py` line 156.
+The server starts on port 5001 and auto-opens `http://localhost:5001` in the browser. To change the port, edit `app.py`.
 
 **First run** — install dependencies manually if needed:
 ```bash

@@ -109,9 +109,9 @@ python3 --version
 
 ### App won't open in browser
 
-1. Check that port 5000 is not in use by another application
+1. Check that port 5001 is not in use by another application
 2. The browser window should open automatically after 2 seconds
-3. If not, manually visit `http://localhost:5000` in your browser
+3. If not, manually visit `http://localhost:5001` in your browser
 
 ### "Module not found" error
 
@@ -152,8 +152,8 @@ A: In `stretch_data.json` in the app folder. This is a regular text file you can
 **Q: Can I delete my data?**
 A: Yes. Delete the `stretch_data.json` file or use the settings to reset.
 
-**Q: Why port 5000?**
-A: It's a common development port. If you have another app using it, you can change it in `app.py` line 157.
+**Q: Why port 5001?**
+A: Port 5000 is used by macOS AirPlay Receiver. If 5001 is also taken, you can change it in `app.py`.
 
 ## Support & Feedback
 

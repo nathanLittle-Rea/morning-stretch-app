@@ -141,16 +141,16 @@ def health_check():
 def open_browser():
     """Open the browser after a short delay."""
     time.sleep(2)
-    webbrowser.open('http://localhost:5000')
+    webbrowser.open('http://localhost:5001')
 
 if __name__ == '__main__':
     print("=" * 60)
     print("Morning Stretch App - Starting...")
     print("=" * 60)
-    print("\n✓ Server running at http://localhost:5000")
+    print("\n✓ Server running at http://localhost:5001")
     print("✓ Opening browser window...\n")
-    
+
     browser_thread = threading.Thread(target=open_browser, daemon=True)
     browser_thread.start()
-    
-    app.run(debug=False, host='0.0.0.0', port=5000, use_reloader=False)
+
+    app.run(debug=False, host='0.0.0.0', port=5001, use_reloader=False)
