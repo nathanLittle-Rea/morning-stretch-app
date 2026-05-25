@@ -5,50 +5,68 @@ const exercises = [
         id: 1,
         name: 'Box breathing',
         time: 60,
-        desc: 'Set your nervous system for success. Inhale for 4 counts, hold for 4, exhale for 4, hold for 4. This activates your parasympathetic response.',
+        desc: 'Lying on your back. Inhale for 4 counts, hold for 4, exhale for 4, hold for 4. Repeat for the full minute. This activates your parasympathetic response and primes your body for movement.',
         isBreathing: true
     },
     {
         id: 2,
-        name: 'Neck rolls & shoulder shrugs',
+        name: 'Glute bridge',
         time: 60,
-        desc: 'Slowly roll your head in a full circle (both directions). Combine with 5 slow shoulder shrugs. This releases tension held overnight.'
+        desc: 'Lying on your back, knees bent, feet flat. Push through your heels to lift your hips until your body forms a straight line from shoulders to knees. Squeeze your glutes at the top, hold 2 seconds, lower slowly. Repeat for 1 minute. Reactivates glutes that go dormant overnight.'
     },
     {
         id: 3,
-        name: 'Cat-cow stretch',
-        time: 90,
-        desc: 'On hands and knees, alternate between arching your back (cow) and rounding it (cat). Move slowly with your breath. Repeat 10 times.'
+        name: 'Spinal twist',
+        time: 60,
+        desc: 'Lying on your back, pull your right knee to your chest then gently let it fall across your body to the left. Extend your right arm out. Hold 25-30 seconds, then switch sides. Releases lumbar tension before you stand.'
     },
     {
         id: 4,
-        name: "Child's pose",
-        time: 60,
-        desc: 'Sink your hips back to your heels, arms stretched forward. Breathe deeply. This gently lengthens your back and calms your nervous system.'
+        name: 'Cat-cow stretch',
+        time: 90,
+        desc: 'Come to hands and knees. Inhale and drop your belly toward the floor, lifting your head and tailbone (cow). Exhale and round your spine toward the ceiling, tucking chin and pelvis (cat). Move slowly with your breath. Repeat 10 times.'
     },
     {
         id: 5,
-        name: 'Standing forward fold',
+        name: 'Thread the needle',
         time: 60,
-        desc: 'Stand and fold forward, letting your head hang heavy. Bend your knees generously. This boosts circulation to your brain.'
+        desc: 'From hands and knees, slide your right arm under your body along the floor, rotating your upper back until your right shoulder and ear rest on the mat. Hold 25-30 seconds, then switch sides. Targets thoracic (mid-upper back) rotation that the spinal twist misses.'
     },
     {
         id: 6,
-        name: 'Quad & hip flexor stretch',
-        time: 90,
-        desc: 'Pull one foot toward your glute, hold 30 seconds each side. Then do a walking lunge on each leg. Do 5 per side.'
+        name: "Child's pose",
+        time: 60,
+        desc: 'Sink your hips back to your heels, arms stretched forward. Breathe deeply into your back. This gently lengthens your spine, lats, and calms your nervous system after the quadruped work.'
     },
     {
         id: 7,
-        name: 'Spinal twist',
-        time: 60,
-        desc: 'Lying on your back, pull one knee to your chest then gently twist across your body. Hold 20-30 seconds per side.'
+        name: '90/90 hip flow',
+        time: 90,
+        desc: 'Sit on the floor with both legs bent at 90 degrees — front leg in front, back leg to the side. Sit tall and hold 30 seconds, then rotate to switch sides. This is the gold standard for hip internal and external rotation, covering what forward folds and hip flexor stretches miss.'
     },
     {
         id: 8,
+        name: 'Neck rolls & shoulder shrugs',
+        time: 60,
+        desc: 'Slowly roll your head in a full circle each direction — 3 times each way. Follow with 5 slow shoulder shrugs: lift to ears, hold 2 seconds, release. Releases overnight tension in the cervical spine and upper traps.'
+    },
+    {
+        id: 9,
+        name: 'Standing forward fold',
+        time: 60,
+        desc: 'Stand and fold forward, letting your head hang heavy. Bend your knees generously. Slowly roll up one vertebra at a time, arms sweeping overhead. Boosts circulation to your brain and articulates the full spine.'
+    },
+    {
+        id: 10,
+        name: 'Quad & hip flexor stretch',
+        time: 90,
+        desc: 'Pull one foot toward your glute, hold 30 seconds each side. Then step into a kneeling lunge — back knee down, front foot forward — and press your hips forward gently. Hold 20 seconds per side. Releases hip flexor compression from sleep.'
+    },
+    {
+        id: 11,
         name: 'Energizing breath',
         time: 60,
-        desc: 'Stand tall and do 20 rapid diaphragmatic breaths (belly breathing). This floods your system with oxygen and activates alertness.',
+        desc: 'Stand tall with feet shoulder-width apart. Do 20 rapid diaphragmatic breaths — quick inhale through the nose, sharp exhale through the mouth, driven by your belly. This floods your system with oxygen and activates alertness.',
         isBreathing: true
     }
 ];
@@ -290,6 +308,12 @@ const app = {
     showBreathingGuide() {
         const currentEx = exercises[this.state.currentExerciseIndex];
         if (currentEx && currentEx.isBreathing) {
+            const isEnergizing = currentEx.name === 'Energizing breath';
+            document.getElementById('breathingTitle').textContent = currentEx.name;
+            document.getElementById('breathingSubtitle').textContent = isEnergizing ? 'Belly-driven rapid breath' : 'Follow the circle';
+            document.getElementById('breathingCounts').textContent = isEnergizing
+                ? '20 rapid breaths — inhale nose, exhale mouth'
+                : 'Inhale (4) → Hold (4) → Exhale (4) → Hold (4)';
             document.getElementById('breathingGuide').classList.add('active');
             this.animateBreathing();
         } else {
