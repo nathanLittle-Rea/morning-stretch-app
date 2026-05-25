@@ -35,7 +35,17 @@ Extract the `morning-stretch-app` folder to your desired location (Desktop, Docu
 
 ### Step 3: Launch the App
 
-**On Mac or Linux:**
+**On Mac — menu bar app (recommended):**
+```bash
+cd morning-stretch-app
+chmod +x menubar.sh
+./menubar.sh
+```
+This places a ☀️ icon in your menu bar with Start, Stop, and Open in Browser controls. See [Setting up the Automator app](#setting-up-the-automator-app) below to launch it with a single click.
+
+> **Note:** The menu bar app is macOS-only. On Linux, use the terminal launch below.
+
+**On Linux:**
 ```bash
 cd morning-stretch-app
 chmod +x launch.sh
@@ -47,7 +57,24 @@ chmod +x launch.sh
 2. Double-click `launch.bat`
 3. The app will open in your default browser
 
+> **Note:** The menu bar app is not available on Windows or Linux. Use the launch script above instead. Windows/Linux tray icon support may be added in a future release.
+
 The first time you launch, it may take 30-60 seconds to install dependencies. Subsequent launches are instant.
+
+### Setting up the Automator app
+
+For a one-click launcher on Mac:
+
+1. Open **Automator** → New Document → **Application**
+2. Search for **Run Shell Script** and double-click it
+3. Paste the following:
+```bash
+cd /Users/your-username/path-to/morning-stretch-app
+source venv/bin/activate
+python3 menubar.py
+```
+4. Save as **Morning Stretch** to your Applications folder
+5. Drag it to your Dock for easy access
 
 ## Usage
 
