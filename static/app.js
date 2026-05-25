@@ -56,7 +56,9 @@ const exercises = [
 const app = {
     state: {
         isRunning: false,
-        timeLeft: 600,
+        exerciseTimeLeft: 0,
+        inTransition: false,
+        transitionTimeLeft: 0,
         currentExerciseIndex: -1,
         completedExercises: new Set(),
         totalSessions: 0,
@@ -72,7 +74,6 @@ const app = {
     async init() {
         this.renderExercises();
         await this.loadStats();
-        this.updateDisplay();
         this.loadPreferences();
     },
 
@@ -151,6 +152,8 @@ const app = {
             this.state.currentExerciseIndex = 0;
         }
         this.state.isRunning = true;
+        this.state.inTransition = false;
+        this.state.exerciseTimeLeft = exercises[this.state.currentExerciseIndex].time;
         this.state.sessionStartTime = Date.now();
 
         document.getElementById('startBtn').style.display = 'none';
@@ -174,19 +177,21 @@ const app = {
     reset() {
         this.state.isRunning = false;
         clearInterval(this._breathingInterval);
-        this.state.timeLeft = 600;
+        this.state.exerciseTimeLeft = 0;
+        this.state.inTransition = false;
+        this.state.transitionTimeLeft = 0;
         this.state.currentExerciseIndex = -1;
         this.state.completedExercises.clear();
-        
+
         document.getElementById('pauseBtn').style.display = 'none';
         document.getElementById('startBtn').style.display = 'flex';
         document.getElementById('startBtn').textContent = '▶ Start';
         document.getElementById('startBtn').disabled = false;
         document.getElementById('skipBtn').style.display = 'none';
         document.getElementById('breathingGuide').classList.remove('active');
+        document.getElementById('timerDisplay').textContent = '00:00';
         document.getElementById('exerciseIndicator').textContent = 'Ready to start';
-        
-        this.updateDisplay();
+
         this.renderExercises();
     },
 
@@ -194,9 +199,12 @@ const app = {
         if (this.state.currentExerciseIndex < exercises.length - 1) {
             this.state.completedExercises.add(this.state.currentExerciseIndex);
             this.state.currentExerciseIndex++;
+            this.state.inTransition = false;
+            this.state.exerciseTimeLeft = exercises[this.state.currentExerciseIndex].time;
             this.playTransitionTone();
             this.renderExercises();
             this.showBreathingGuide();
+            this.updateDisplay();
         } else {
             this.finishSession();
         }
@@ -204,13 +212,43 @@ const app = {
 
     tick() {
         if (!this.state.isRunning) return;
-        
-        if (this.state.timeLeft > 0) {
-            this.state.timeLeft--;
-            this.updateDisplay();
-            setTimeout(() => this.tick(), 1000);
+
+        if (this.state.inTransition) {
+            if (this.state.transitionTimeLeft > 0) {
+                this.state.transitionTimeLeft--;
+                this.updateDisplay();
+                setTimeout(() => this.tick(), 1000);
+            } else {
+                // Transition over — start next exercise
+                this.state.inTransition = false;
+                this.state.exerciseTimeLeft = exercises[this.state.currentExerciseIndex].time;
+                this.playTransitionTone();
+                this.showBreathingGuide();
+                this.updateDisplay();
+                setTimeout(() => this.tick(), 1000);
+            }
         } else {
-            this.finishSession();
+            if (this.state.exerciseTimeLeft > 0) {
+                this.state.exerciseTimeLeft--;
+                this.updateDisplay();
+                setTimeout(() => this.tick(), 1000);
+            } else {
+                // Exercise over
+                this.state.completedExercises.add(this.state.currentExerciseIndex);
+                if (this.state.currentExerciseIndex < exercises.length - 1) {
+                    this.state.currentExerciseIndex++;
+                    this.state.inTransition = true;
+                    this.state.transitionTimeLeft = 15;
+                    clearInterval(this._breathingInterval);
+                    document.getElementById('breathingGuide').classList.remove('active');
+                    this.playTransitionTone();
+                    this.renderExercises();
+                    this.updateDisplay();
+                    setTimeout(() => this.tick(), 1000);
+                } else {
+                    this.finishSession();
+                }
+            }
         }
     },
 
@@ -288,14 +326,21 @@ const app = {
     },
 
     updateDisplay() {
-        const mins = Math.floor(this.state.timeLeft / 60);
-        const secs = this.state.timeLeft % 60;
-        document.getElementById('timerDisplay').textContent = 
-            String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
-        
-        if (this.state.currentExerciseIndex >= 0 && this.state.currentExerciseIndex < exercises.length) {
-            document.getElementById('exerciseIndicator').textContent = exercises[this.state.currentExerciseIndex].name;
+        let seconds, label;
+        if (this.state.inTransition) {
+            seconds = this.state.transitionTimeLeft;
+            const next = exercises[this.state.currentExerciseIndex];
+            label = `Up next: ${next ? next.name : ''}`;
+        } else {
+            seconds = this.state.exerciseTimeLeft;
+            const current = exercises[this.state.currentExerciseIndex];
+            label = current ? current.name : 'Ready to start';
         }
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        document.getElementById('timerDisplay').textContent =
+            String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+        document.getElementById('exerciseIndicator').textContent = label;
     },
 
     updateStatsDisplay() {
