@@ -25,14 +25,10 @@ class MorningStretchApp(rumps.App):
             rumps.MenuItem('Quit', callback=self.quit_app),
         ]
         self._server_process = None
-        self._update_menu_state()
+        self._update_title()
 
-    def _update_menu_state(self):
-        running = self._is_running()
-        self.menu['Start Server'].set_callback(self.start_server if not running else None)
-        self.menu['Stop Server'].set_callback(self.stop_server if running else None)
-        self.menu['Open in Browser'].set_callback(self.open_browser if running else None)
-        self.title = '☀️' if not running else '☀️●'
+    def _update_title(self):
+        self.title = '☀️●' if self._is_running() else '☀️'
 
     def _is_running(self):
         try:
@@ -44,7 +40,6 @@ class MorningStretchApp(rumps.App):
         except Exception:
             return False
 
-    @rumps.clicked('Start Server')
     def start_server(self, _):
         if self._is_running():
             rumps.notification('Morning Stretch', '', 'Server is already running.')
@@ -60,12 +55,14 @@ class MorningStretchApp(rumps.App):
             import time
             time.sleep(2)
             webbrowser.open(APP_URL)
+            self._update_title()
         threading.Thread(target=open_after_start, daemon=True).start()
-        self._update_menu_state()
         rumps.notification('Morning Stretch', '', 'Server started.')
 
-    @rumps.clicked('Stop Server')
     def stop_server(self, _):
+        if not self._is_running():
+            rumps.notification('Morning Stretch', '', 'Server is not running.')
+            return
         try:
             result = subprocess.run(
                 ['lsof', '-ti', ':5001'],
@@ -77,14 +74,15 @@ class MorningStretchApp(rumps.App):
         except Exception:
             pass
         self._server_process = None
-        self._update_menu_state()
+        self._update_title()
         rumps.notification('Morning Stretch', '', 'Server stopped.')
 
-    @rumps.clicked('Open in Browser')
     def open_browser(self, _):
+        if not self._is_running():
+            rumps.notification('Morning Stretch', '', 'Server is not running. Start it first.')
+            return
         webbrowser.open(APP_URL)
 
-    @rumps.clicked('Quit')
     def quit_app(self, _):
         if self._is_running():
             self.stop_server(None)
